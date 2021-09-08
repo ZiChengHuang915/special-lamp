@@ -2,7 +2,7 @@ from time import sleep
 import re
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-MAX_COLUMNS = 50
+MAX_COLUMNS = 100
 
 class GPU:
     def __init__(self, name, revenue_24h, link):
