@@ -66,10 +66,10 @@ for index in range(1, len(whattomine_entries)):
             "Swap / Trade" not in prices[index].text.strip()):
             if len(re.findall('\d+', gpu_name)) > 0:
                 if re.findall('\d+', gpu_name)[0] in names[index].text.strip() or (len(re.findall('\d+', gpu_name)) > 1 and re.findall('\d+', gpu_name)[1] in names[index].text.strip()):
-                    kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", ""), prices[index].text.strip().replace("\n", "").replace(",", "").replace("$", "").replace(".00", "")))
+                    kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", "").replace("\"", ""), prices[index].text.strip().replace("\n", "").replace(",", "").replace("$", "").replace(".00", "")))
                     #print(names[index].text.strip() + "\n" + prices[index].text.strip())
             else:
-                kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", ""), prices[index].text.strip().replace("\n", "").replace(",", "")))
+                kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", "").replace("\"", ""), prices[index].text.strip().replace("\n", "").replace(",", "")))
                 #print(names[index].text.strip() + "\n" + prices[index].text.strip())
                 
     GPUS[len(GPUS) - 1].kijiji_entries = kijiji_entries
@@ -77,7 +77,7 @@ for index in range(1, len(whattomine_entries)):
     write_string = gpu_name + ", " + revenue_24h
     for index in GPUS[len(GPUS) - 1].kijiji_entries:
         write_string = write_string + ", " + str(index.name).replace('\uff08', "").replace('\uff09', "") + ", " + str(index.price) # replace is for bad unicode
-    for index in range(0, MAX_COLUMNS - len(GPUS[len(GPUS) - 1].kijiji_entries)):
+    for index in range(0, MAX_COLUMNS - len(GPUS[len(GPUS) - 1].kijiji_entries) * 2):
         write_string = write_string + ", " + "NULL"
     write_string = write_string + "\n"
     print(write_string)
