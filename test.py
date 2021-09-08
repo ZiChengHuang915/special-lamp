@@ -2,6 +2,7 @@ from time import sleep
 import re
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
+MAX_COLUMNS = 50
 
 class GPU:
     def __init__(self, name, revenue_24h, link):
@@ -27,7 +28,7 @@ webpage.close()
 whattomine_entries = page_soup.findAll("tr")
 
 headers = "Name,Revenue 24H"
-for index in range(0, 50):
+for index in range(0, MAX_COLUMNS):
     headers = headers + "," + "NULL"
 headers = headers + "\n"
 f = open("test.csv", "w")
@@ -76,6 +77,8 @@ for index in range(1, len(whattomine_entries)):
     write_string = gpu_name + ", " + revenue_24h
     for index in GPUS[len(GPUS) - 1].kijiji_entries:
         write_string = write_string + ", " + str(index.name).replace('\uff08', "").replace('\uff09', "") + ", " + str(index.price) # replace is for bad unicode
+    for index in range(0, MAX_COLUMNS - len(GPUS[len(GPUS) - 1].kijiji_entries)):
+        write_string = write_string + ", " + "NULL"
     write_string = write_string + "\n"
     print(write_string)
     f.write(write_string)
