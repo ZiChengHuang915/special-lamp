@@ -26,7 +26,10 @@ webpage.close()
 
 whattomine_entries = page_soup.findAll("tr")
 
-headers = "Name,Revenue 24H\n"
+headers = "Name,Revenue 24H"
+for index in range(0, 50):
+    headers = headers + "," + "NULL"
+headers = headers + "\n"
 f = open("test.csv", "w")
 f.write(headers)
 
