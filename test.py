@@ -29,7 +29,7 @@ whattomine_entries = page_soup.findAll("tr")
 
 headers = "Name,Revenue 24H"
 for index in range(0, MAX_COLUMNS):
-    headers = headers + "," + "NULL"
+    headers = headers + "," + " "
 headers = headers + "\n"
 f = open("test.csv", "w")
 f.write(headers)
@@ -78,7 +78,7 @@ for index in range(1, len(whattomine_entries)):
     for index in GPUS[len(GPUS) - 1].kijiji_entries:
         write_string = write_string + ", " + str(index.name).replace('\uff08', "").replace('\uff09', "") + ", " + str(index.price) # replace is for bad unicode
     for index in range(0, MAX_COLUMNS - len(GPUS[len(GPUS) - 1].kijiji_entries) * 2):
-        write_string = write_string + ", " + "NULL"
+        write_string = write_string + ", " + " "
     write_string = write_string + "\n"
     print(write_string)
     f.write(write_string)
