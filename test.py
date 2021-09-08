@@ -2,7 +2,7 @@ from time import sleep
 import re
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
-MAX_COLUMNS = 100
+MAX_COLUMNS = 80 #kijiji has max 40 listings in one page
 
 class GPU:
     def __init__(self, name, revenue_24h, link):
@@ -82,7 +82,7 @@ for index in range(1, len(whattomine_entries)):
     write_string = write_string + "\n"
     print(write_string)
     f.write(write_string)
-    sleep(10)
+    sleep(5)
 
 f.close()
 
