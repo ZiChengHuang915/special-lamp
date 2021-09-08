@@ -1,3 +1,5 @@
+from time import sleep
+import re
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 
@@ -16,51 +18,69 @@ class kijiji_entry:
 GPUS = []
 kijiji_entries = []
 
-page_url = "https://whattomine.com/gpus"
-req = Request(page_url, headers={'User-Agent': 'Mozilla/5.0'})
+whattomine_url = "https://whattomine.com/gpus"
+req = Request(whattomine_url, headers={'User-Agent': 'Mozilla/5.0'})
 webpage = urlopen(req)
 page_soup = BeautifulSoup(webpage.read(), "html.parser")
 webpage.close()
 
-whattomine_entires = page_soup.findAll("tr")
+whattomine_entries = page_soup.findAll("tr")
 
 headers = "Name,Revenue 24H\n"
 f = open("test.csv", "w")
 f.write(headers)
 
-
-for index in range(1, len(whattomine_entires)):
-    name_container = whattomine_entires[index].find("a")
-    name = name_container.text.strip().splitlines()[2].strip()
-    #print(name)
+print(len(whattomine_entries))
+for index in range(1, len(whattomine_entries)):
+    kijiji_entries = []
     
-
-    revenue_24h = whattomine_entires[index].find("td", {"class":"text-right table-"}).text.strip()
+    name_container = whattomine_entries[index].find("a")
+    gpu_name = name_container.text.strip().splitlines()[2].strip()
+    #gpu_name = "geforce rtx 3070"
+    #print(name)
+    revenue_24h = whattomine_entries[index].find("td", {"class":"text-right table-"}).text.strip()
     #print(revenue_24h)
 
-    temp_name = name.replace(" ", "-")
+    temp_name = gpu_name.replace(" ", "-")
     link = "https://www.kijiji.ca/b-gta-greater-toronto-area/" + temp_name + "/k0l1700272?rb=true&dc=true"
-
-    GPUS.append(GPU(name, revenue_24h, link));
-    f.write(name + ", " + revenue_24h + "\n")
+    GPUS.append(GPU(gpu_name, revenue_24h, link));
+    
+    kijiji_url = GPUS[len(GPUS) - 1].link
+    #kijiji_url = "https://www.kijiji.ca/b-gta-greater-toronto-area/geforce-rtx-3070/k0l1700272?rb=true&dc=true"
+    print(kijiji_url)
+    req = Request(kijiji_url, headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req)
+    kijiji_page_soup = BeautifulSoup(webpage.read(), "html.parser")
+    webpage.close()
+    
+    names = kijiji_page_soup.findAll("a", {"class":"title"})
+    prices = kijiji_page_soup.findAll("div", {"class":"price"})
+    print("has " + str(len(names)))
+    for index in range(0, len(names)):
+        if ("Please Contact" not in prices[index].text.strip() and 
+            "Free" not in prices[index].text.strip() and
+            "Swap / Trade" not in prices[index].text.strip()):
+            if len(re.findall('\d+', gpu_name)) > 0:
+                if re.findall('\d+', gpu_name)[0] in names[index].text.strip() or (len(re.findall('\d+', gpu_name)) > 1 and re.findall('\d+', gpu_name)[1] in names[index].text.strip()):
+                    kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", ""), prices[index].text.strip().replace("\n", "").replace(",", "").replace("$", "").replace(".00", "")))
+                    #print(names[index].text.strip() + "\n" + prices[index].text.strip())
+            else:
+                kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", ""), prices[index].text.strip().replace("\n", "").replace(",", "")))
+                #print(names[index].text.strip() + "\n" + prices[index].text.strip())
+                
+    GPUS[len(GPUS) - 1].kijiji_entries = kijiji_entries
+    print(len(kijiji_entries))
+    write_string = gpu_name + ", " + revenue_24h
+    for index in GPUS[len(GPUS) - 1].kijiji_entries:
+        write_string = write_string + ", " + str(index.name).replace('\uff08', "").replace('\uff09', "") + ", " + str(index.price) # replace is for bad unicode
+    write_string = write_string + "\n"
+    print(write_string)
+    f.write(write_string)
+    sleep(10)
 
 f.close()
 
-page_url = GPUS[0].link
-req = Request(page_url, headers={'User-Agent': 'Mozilla/5.0'})
-webpage = urlopen(req)
-page_soup = BeautifulSoup(webpage.read(), "html.parser")
-webpage.close()
 
-names = page_soup.findAll("a", {"class":"title"})
-prices = page_soup.findAll("div", {"class":"price"})
-
-for index in range(0, len(names)):
-    if ("Please Contact" not in prices[index].text.strip() and 
-        "Free" not in prices[index].text.strip() and
-        "Swap/Trade" not in prices[index].text.strip()):
-        kijiji_entries.append(kijiji_entry(names[index], prices[index]))
-        print(names[index].text.strip() + "\n" + prices[index].text.strip())
         
     
     
