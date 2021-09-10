@@ -89,7 +89,7 @@ for index in range(1, len(whattomine_entries)):
     sleep(3)
 
 f.write("\n")
-f.write("Link, Revenue 24H, Price, ROI, Title, Description")
+f.write("Link, Revenue 24H, Price, ROI, Title, Description\n")
 all_entries = []
 for gpu in GPUS:
     for entry in gpu.kijiji_entries:
