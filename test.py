@@ -12,7 +12,9 @@ class GPU:
         self.kijiji_entries = []
         
 class kijiji_entry:
-    def __init__(self, name, price):
+    def __init__(self, name, price, gpu_name, gpu_revenue_24h):
+        self.gpu_name = gpu_name
+        self.gpu_revenue_24h = gpu_revenue_24h
         self.name = name
         self.price = price
         
@@ -40,17 +42,13 @@ for index in range(1, len(whattomine_entries)):
     
     name_container = whattomine_entries[index].find("a")
     gpu_name = name_container.text.strip().splitlines()[2].strip()
-    #gpu_name = "geforce rtx 3070"
-    #print(name)
     revenue_24h = whattomine_entries[index].find("td", {"class":"text-right table-"}).text.strip()
-    #print(revenue_24h)
 
-    temp_name = gpu_name.replace(" ", "-")
-    link = "https://www.kijiji.ca/b-gta-greater-toronto-area/" + temp_name + "/k0l1700272?rb=true&dc=true"
+    temp_gpu_name = gpu_name.replace(" ", "-")
+    link = "https://www.kijiji.ca/b-gta-greater-toronto-area/" + temp_gpu_name + "/k0l1700272?rb=true&dc=true"
     GPUS.append(GPU(gpu_name, revenue_24h, link));
-    
     kijiji_url = GPUS[len(GPUS) - 1].link
-    #kijiji_url = "https://www.kijiji.ca/b-gta-greater-toronto-area/geforce-rtx-3070/k0l1700272?rb=true&dc=true"
+
     print(kijiji_url)
     req = Request(kijiji_url, headers={'User-Agent': 'Mozilla/5.0'})
     webpage = urlopen(req)
@@ -61,16 +59,16 @@ for index in range(1, len(whattomine_entries)):
     prices = kijiji_page_soup.findAll("div", {"class":"price"})
     print("has " + str(len(names)))
     for index in range(0, len(names)):
-        if ("Please Contact" not in prices[index].text.strip() and 
-            "Free" not in prices[index].text.strip() and
-            "Swap / Trade" not in prices[index].text.strip()):
+        temp_name = names[index].text.strip().replace("\n", "").replace(",", "").replace("\"", "")
+        temp_price = prices[index].text.strip().replace("\n", "").replace(",", "").replace("$", "").replace(".00", "")
+        if ("Please Contact" not in temp_price and 
+            "Free" not in temp_price and
+            "Swap / Trade" not in temp_price):
             if len(re.findall('\d+', gpu_name)) > 0:
-                if re.findall('\d+', gpu_name)[0] in names[index].text.strip() or (len(re.findall('\d+', gpu_name)) > 1 and re.findall('\d+', gpu_name)[1] in names[index].text.strip()):
-                    kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", "").replace("\"", ""), prices[index].text.strip().replace("\n", "").replace(",", "").replace("$", "").replace(".00", "")))
-                    #print(names[index].text.strip() + "\n" + prices[index].text.strip())
+                if re.findall('\d+', gpu_name)[0] in temp_name or (len(re.findall('\d+', gpu_name)) > 1 and re.findall('\d+', gpu_name)[1] in temp_name):
+                    kijiji_entries.append(kijiji_entry(temp_name, temp_price, gpu_name, revenue_24h))
             else:
-                kijiji_entries.append(kijiji_entry(names[index].text.strip().replace("\n", "").replace(",", "").replace("\"", ""), prices[index].text.strip().replace("\n", "").replace(",", "")))
-                #print(names[index].text.strip() + "\n" + prices[index].text.strip())
+                kijiji_entries.append(kijiji_entry(temp_name, temp_price, gpu_name, revenue_24h))
                 
     GPUS[len(GPUS) - 1].kijiji_entries = kijiji_entries
     print(len(kijiji_entries))
@@ -82,7 +80,13 @@ for index in range(1, len(whattomine_entries)):
     write_string = write_string + "\n"
     print(write_string)
     f.write(write_string)
-    sleep(5)
+    sleep(1)
+
+f.write("\n")
+for gpu in GPUS:
+    for entry in gpu.kijiji_entries:
+        write_string = entry.gpu_name + "," + entry.gpu_revenue_24h + "," + entry.name.replace('\uff08', "").replace('\uff09', "") + "," + entry.price + "\n"
+        f.write(write_string)
 
 f.close()
 
