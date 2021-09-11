@@ -20,27 +20,36 @@ class kijiji_entry:
         self.description = description
         self.link = link
         self.roi = float(price) / float(gpu_revenue_24h)
-        
-GPUS = []
-kijiji_entries = []
 
-whattomine_url = "https://whattomine.com/gpus"
-req = Request(whattomine_url, headers={'User-Agent': 'Mozilla/5.0'})
-webpage = urlopen(req)
-page_soup = BeautifulSoup(webpage.read(), "html.parser")
-webpage.close()
+def getKijijiEntries(gpu_name_param):        
+    GPUS = []
+    kijiji_entries = []
+    
+    whattomine_url = "https://whattomine.com/gpus"
+    req = Request(whattomine_url, headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req)
+    page_soup = BeautifulSoup(webpage.read(), "html.parser")
+    webpage.close()
+    
+    whattomine_entries = page_soup.findAll("tr")
+    
+    headers = "Name,Revenue 24H"
+    for index in range(0, MAX_COLUMNS):
+        headers = headers + "," + " "
+    headers = headers + "\n"
+    f = open("test.csv", "w")
+    f.write(headers)
+    
+    index = -1
+    for temp_index in range(1, len(whattomine_entries)):
+        name_container = whattomine_entries[temp_index].find("a")
+        gpu_name = name_container.text.strip().splitlines()[2].strip()
+        if gpu_name == gpu_name_param:
+            index = temp_index
+            break
+    
+    print(len(whattomine_entries))
 
-whattomine_entries = page_soup.findAll("tr")
-
-headers = "Name,Revenue 24H"
-for index in range(0, MAX_COLUMNS):
-    headers = headers + "," + " "
-headers = headers + "\n"
-f = open("test.csv", "w")
-f.write(headers)
-
-print(len(whattomine_entries))
-for index in range(1, len(whattomine_entries)):
     kijiji_entries = []
     
     name_container = whattomine_entries[index].find("a")
@@ -86,26 +95,27 @@ for index in range(1, len(whattomine_entries)):
     write_string = write_string + "\n"
     print(write_string)
     f.write(write_string)
-    sleep(3)
-
-f.write("\n")
-f.write("Link, Revenue 24H, Price, ROI, Title, Description\n")
-all_entries = []
-for gpu in GPUS:
-    for entry in gpu.kijiji_entries:
-        all_entries.append(entry)
-        #write_string = entry.link + "," + str(entry.gpu_revenue_24h) + "," + entry.price + "," + str(entry.roi) + "," + entry.name.replace('\uff08', "").replace('\uff09', "")  + "\n"
-        #f.write(write_string)
-
-all_entries.sort(key=lambda x: x.roi)
-for entry in all_entries:
-    write_string = entry.link + "," + str(entry.gpu_revenue_24h) + "," + entry.price + "," + str(entry.roi) + "," + entry.name.replace('\uff08', "").replace('\uff09', "") + "," + entry.description.replace('\uff08', "").replace('\uff09', "").replace('\uff0c', ".").replace('\u202f', "") + "\n"
-    f.write(write_string)
-
-f.close()
-
-
-        
+    #sleep(3)
     
+    f.write("\n")
+    f.write("Link, Revenue 24H, Price, ROI, Title, Description\n")
+    all_entries = []
+    for gpu in GPUS:
+        for entry in gpu.kijiji_entries:
+            all_entries.append(entry)
+            #write_string = entry.link + "," + str(entry.gpu_revenue_24h) + "," + entry.price + "," + str(entry.roi) + "," + entry.name.replace('\uff08', "").replace('\uff09', "")  + "\n"
+            #f.write(write_string)
     
+    all_entries.sort(key=lambda x: x.roi)
+    temp_names, temp_prices, temp_descriptions = [], [], []
+    for entry in all_entries:
+        temp_names.append(entry.name)
+        temp_prices.append(entry.price)
+        temp_descriptions.append(entry.description)
+        write_string = entry.link + "," + str(entry.gpu_revenue_24h) + "," + entry.price + "," + str(entry.roi) + "," + entry.name.replace('\uff08', "").replace('\uff09', "") + "," + entry.description.replace('\uff08', "").replace('\uff09', "").replace('\uff0c', ".").replace('\u202f', "") + "\n"
+        f.write(write_string)
     
+    f.close()
+    
+    return temp_names, temp_prices, temp_descriptions
+ 
