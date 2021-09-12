@@ -2,7 +2,7 @@ import './App.css';
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 
-const App = () => {
+function App() {
   const [cards, setCard] = useState();
 
   useEffect (() => {
