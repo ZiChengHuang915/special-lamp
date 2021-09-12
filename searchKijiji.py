@@ -34,7 +34,7 @@ def getGPUs():
     for index in range(1, len(whattomine_entries)):
         name_container = whattomine_entries[index].find("a")
         gpu_name = name_container.text.strip().splitlines()[2].strip()
-        GPUS.append(gpu_name)
+        GPUS.append({"gpu_name": gpu_name})
     
     return GPUS
         
