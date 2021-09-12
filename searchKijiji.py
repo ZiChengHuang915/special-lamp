@@ -1,4 +1,3 @@
-from time import sleep
 import re
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
@@ -20,6 +19,25 @@ class kijiji_entry:
         self.description = description
         self.link = link
         self.roi = float(price) / float(gpu_revenue_24h)
+
+def getGPUs():
+    GPUS = []
+    
+    whattomine_url = "https://whattomine.com/gpus"
+    req = Request(whattomine_url, headers={'User-Agent': 'Mozilla/5.0'})
+    webpage = urlopen(req)
+    page_soup = BeautifulSoup(webpage.read(), "html.parser")
+    webpage.close()
+    
+    whattomine_entries = page_soup.findAll("tr")
+    
+    for index in range(1, len(whattomine_entries)):
+        name_container = whattomine_entries[index].find("a")
+        gpu_name = name_container.text.strip().splitlines()[2].strip()
+        GPUS.append(gpu_name)
+    
+    return GPUS
+        
 
 def getKijijiEntries(gpu_name_param):        
     GPUS = []
