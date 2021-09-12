@@ -1,6 +1,8 @@
 from flask import Flask,jsonify
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'application/json'
 
 from searchKijiji import getKijijiEntries as skGetKijijiEntries
 from searchKijiji import getGPUs as skGetGPUs
