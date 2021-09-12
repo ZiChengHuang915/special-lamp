@@ -11,9 +11,9 @@ function App() {
 
   const getCards = () => {
     var url = "https://kijijifinder.herokuapp.com/getGPUs/";
-    console.log("hello")
     axios.get(url)
       .then(res => {
+        console.log("hello")
         console.log(res.data.data)
       })
   }
