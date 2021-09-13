@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../special-lamp-backend/')
+sys.path.append('../special_lamp_backend/')
 
 from flask import Flask, jsonify
 
