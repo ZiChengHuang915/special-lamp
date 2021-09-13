@@ -1,1 +1,1 @@
-web: gunicorn testapi:app
+web: gunicorn --pythonpath special-lamp-api testapi:app
