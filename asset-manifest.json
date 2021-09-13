@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/special-lamp/static/css/main.a617e044.chunk.css",
+    "main.js": "/special-lamp/static/js/main.612ad4f8.chunk.js",
+    "main.js.map": "/special-lamp/static/js/main.612ad4f8.chunk.js.map",
+    "runtime-main.js": "/special-lamp/static/js/runtime-main.8ef2ab47.js",
+    "runtime-main.js.map": "/special-lamp/static/js/runtime-main.8ef2ab47.js.map",
+    "static/js/2.31496c09.chunk.js": "/special-lamp/static/js/2.31496c09.chunk.js",
+    "static/js/2.31496c09.chunk.js.map": "/special-lamp/static/js/2.31496c09.chunk.js.map",
+    "static/js/3.9a7fa7f1.chunk.js": "/special-lamp/static/js/3.9a7fa7f1.chunk.js",
+    "static/js/3.9a7fa7f1.chunk.js.map": "/special-lamp/static/js/3.9a7fa7f1.chunk.js.map",
+    "index.html": "/special-lamp/index.html",
+    "static/css/main.a617e044.chunk.css.map": "/special-lamp/static/css/main.a617e044.chunk.css.map",
+    "static/js/2.31496c09.chunk.js.LICENSE.txt": "/special-lamp/static/js/2.31496c09.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8ef2ab47.js",
+    "static/js/2.31496c09.chunk.js",
+    "static/css/main.a617e044.chunk.css",
+    "static/js/main.612ad4f8.chunk.js"
+  ]
+}
