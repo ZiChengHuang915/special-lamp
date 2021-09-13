@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../special-lamp-backend/')
+
 from flask import Flask, jsonify
 
 app = Flask(__name__)
