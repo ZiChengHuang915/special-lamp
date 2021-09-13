@@ -5,8 +5,8 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-from searchKijiji import getKijijiEntries as skGetKijijiEntries
-from searchKijiji import getGPUs as skGetGPUs
+from special_lamp_backend.searchKijiji import getKijijiEntries as skGetKijijiEntries
+from special_lamp_backend.searchKijiji import getGPUs as skGetGPUs
 
 @app.route("/getGPUs/", methods=['GET'])
 def getGPUs():
